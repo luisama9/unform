@@ -1,14 +1,18 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Form} from '@unform/mobile';
 import {Button} from 'react-native';
-import {useDispatch} from './store';
 import Input from './input';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export default function FormContainer() {
+export default function FormContainer({setStorage, getStorage}) {
   const formRef = useRef(null);
-  const dispatch = useDispatch();
-  const handleSubmit = ({email, password}) => {
-    dispatch({type: 'ADD_USER', email, password});
+  const [users, setUsers] = useState(getStorage || '');
+
+  const handleSubmit = async ({email, password}) => {
+    setUsers([...users, {email, password}]);
+    // await AsyncStorage.setItem('users', JSON.stringify(users));
+    // console.log(users);
+    setStorage(users);
   };
 
   return (

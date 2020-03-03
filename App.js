@@ -1,12 +1,11 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import FormContainer from './form';
-import Users from './users';
-import {Provider} from './store';
+import List from './list';
+import {useAsyncStorage} from './hook';
 
 const styles = StyleSheet.create({
   container: {
-    // height: '100%',
     margin: 30,
     justifyContent: 'center',
     alignItems: 'center',
@@ -14,15 +13,13 @@ const styles = StyleSheet.create({
 });
 
 const App = () => {
-  // const state = useTrackedState();
-
+  const [storageValue, updateStorage] = useAsyncStorage('users');
+  console.log('APP', storageValue);
   return (
-    <Provider>
-      <SafeAreaView style={styles.container}>
-        <FormContainer />
-        <Users />
-      </SafeAreaView>
-    </Provider>
+    <SafeAreaView style={styles.container}>
+      <FormContainer setStorage={updateStorage} getStorage={storageValue} />
+      <List getStorage={storageValue} />
+    </SafeAreaView>
   );
 };
 
