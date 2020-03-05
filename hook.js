@@ -3,21 +3,21 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 export const useAsyncStorage = (key, defaultValue) => {
   const [storageValue, updateStorageValue] = useState(defaultValue);
-  const [updated, setUpdated] = useState(false);
 
-  const getStorageValue = useCallback(
-    async function getStorageValue() {
-      let value = defaultValue;
-      try {
-        value = JSON.parse(await AsyncStorage.getItem(key)) || defaultValue;
-      } catch (e) {
-      } finally {
-        updateStorageValue(value);
-        setUpdated(true);
-      }
-    },
-    [defaultValue, key],
-  );
+  useEffect(() => {
+
+    updateStorageValue(JSON.parse(await AsyncStorage.getItem(key)))
+  }, [])
+  const getStorageValue = useCallback(async () => {
+    try {
+      updateStorageValue(
+        JSON.parse(await AsyncStorage.getItem(key)) || defaultValue,
+      );
+    } catch (e) {}
+    // finally {
+    //   updateStorageValue(value);
+    // }
+  }, [defaultValue, key]);
 
   async function updateStorage(newValue) {
     try {
@@ -26,17 +26,14 @@ export const useAsyncStorage = (key, defaultValue) => {
       } else {
         const value = JSON.stringify(newValue);
         await AsyncStorage.setItem(key, value);
+        getStorageValue();
       }
-    } catch (e) {
-    } finally {
-      setUpdated(false);
-      getStorageValue();
-    }
+    } catch (e) {}
   }
 
-  useEffect(() => {
-    getStorageValue();
-  }, [getStorageValue, updated]);
+  // useEffect(() => {
+  //   getStorageValue();
+  // }, []);
 
   return [storageValue, updateStorage];
 };
