@@ -10,9 +10,7 @@ export default function FormContainer({setStorage, getStorage}) {
 
   const handleSubmit = async ({email, password}) => {
     setUsers([...users, {email, password}]);
-    // await AsyncStorage.setItem('users', JSON.stringify(users));
-    // console.log(users);
-    setStorage(users);
+    await setStorage(users);
   };
 
   return (
@@ -25,3 +23,4 @@ export default function FormContainer({setStorage, getStorage}) {
     </>
   );
 }
+26;

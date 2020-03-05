@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 
 function Input({name, label, ...rest}) {
   const inputRef = useRef(null);
-  const {fieldName, registerField, defaultValue = '', error} = useField(name);
+  const {fieldName, registerField, defaultValue = ''} = useField(name);
 
   useEffect(() => {
     registerField({
