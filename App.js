@@ -1,14 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useCallback, useEffect} from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Button, TextInput} from 'react-native';
+import {useForm} from 'react-hook-form';
 import {useAsyncStorage} from '@react-native-community/async-storage';
+import List from './list';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,48 +18,66 @@ const styles = StyleSheet.create({
   },
 });
 
+const defaultValues = {
+  email: '',
+  password: '',
+};
+
 const App = () => {
+  const {register, handleSubmit, setValue, reset, watch} = useForm({
+    defaultValues,
+  });
   const {getItem, setItem, removeItem} = useAsyncStorage('users');
   const [users, setUsers] = useState([]);
-  const [newValue, setNewValue] = useState('');
+  const [updated, setUpdated] = useState(false);
+  const values = watch(); // triggers re-render
+
+  console.log('USER', users);
 
   const loadStorage = useCallback(async () => {
     const item = JSON.parse(await getItem());
-    await setUsers(item === null ? [] : item);
+    (await item) !== null && setUsers(item);
   }, [getItem]);
 
-  const handleSubmit = async () => {
-    await setItem(JSON.stringify([...users, newValue]));
-    setNewValue('');
-    loadStorage();
+  const onSubmit = async ({email, password}) => {
+    await setItem(JSON.stringify([...users, {email, password}]));
+
+    reset(defaultValues);
+    setUpdated(!updated);
   };
 
   const handleReset = async () => {
     try {
       await removeItem();
-      loadStorage();
+      setUpdated(!updated);
     } catch (error) {}
   };
 
   useEffect(() => {
+    register({name: 'email'});
+    register({name: 'password'});
+  }, [register]);
+
+  useEffect(() => {
     loadStorage();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updated]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <>
-        <Button title="Resetar" onPress={handleReset} />
-        <TextInput
-          style={styles.input}
-          value={newValue}
-          onChangeText={text => setNewValue(text)}
-        />
-        <Button title="Enviar" onPress={handleSubmit} />
-        <View>
-          <Text>Listagem</Text>
-          {users && users.map(user => <Text key={user}>{user}</Text>)}
-        </View>
-      </>
+      <Button title="Resetar" onPress={handleReset} />
+      <TextInput
+        value={values.email}
+        style={styles.input}
+        onChangeText={text => setValue('email', text)}
+      />
+      <TextInput
+        value={values.password}
+        style={styles.input}
+        onChangeText={text => setValue('password', text)}
+      />
+      <Button title="Enviar" onPress={handleSubmit(onSubmit)} />
+      <List users={users} />
     </SafeAreaView>
   );
 };

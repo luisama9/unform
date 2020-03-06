@@ -1,26 +1,39 @@
-import React, {useRef, useState} from 'react';
-import {Form} from '@unform/mobile';
-import {Button} from 'react-native';
-import Input from './input';
-import AsyncStorage from '@react-native-community/async-storage';
+import React from 'react';
+import {StyleSheet, TextInput, Button} from 'react-native';
 
-export default function FormContainer({setStorage, getStorage}) {
-  const formRef = useRef(null);
-  const [users, setUsers] = useState(getStorage || '');
+const styles = StyleSheet.create({
+  input: {
+    width: '100%',
+    padding: 15,
+    borderWidth: 1,
+    margin: 5,
+  },
+});
 
-  const handleSubmit = async ({email, password}) => {
-    setUsers([...users, {email, password}]);
-    await setStorage(users);
-  };
-
+export default function FormContainer({
+  emailRef,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  handleReset,
+  handleSubmit,
+}) {
   return (
     <>
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        <Input name="email" type="email" />
-        <Input name="password" type="password" />
-        <Button title="Sign in" onPress={() => formRef.current.submitForm()} />
-      </Form>
+      <Button title="Resetar" onPress={handleReset} />
+      <TextInput
+        ref={emailRef}
+        style={styles.input}
+        value={email}
+        onChangeText={text => setEmail(text)}
+      />
+      <TextInput
+        style={styles.input}
+        value={password}
+        onChangeText={text => setPassword(text)}
+      />
+      <Button title="Enviar" onPress={handleSubmit} />
     </>
   );
 }
-26;

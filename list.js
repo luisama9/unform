@@ -1,15 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 
-export default function List({getStorage}) {
-  const [users, setUsers] = useState(getStorage || []);
-  console.log('USERS', users);
-  useEffect(() => {
-    (async () => {
-      getStorage !== null && setUsers(await getStorage);
-    })();
-  }, [getStorage]);
-
+export default function List({users}) {
   return (
     <View>
       <Text>Listagem</Text>
