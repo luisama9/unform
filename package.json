@@ -17,6 +17,7 @@
     "@unform/core": "^2.0.0",
     "@unform/mobile": "^2.0.0",
     "react": "16.9.0",
+    "react-hook-form": "^4.10.2",
     "react-native": "0.61.5",
     "react-tracked": "^1.2.0"
   },
