@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-export default function List({users}) {
+function List({users}) {
   return (
     <View>
       <Text>Listagem</Text>
@@ -9,3 +9,5 @@ export default function List({users}) {
     </View>
   );
 }
+
+export default React.memo(List);

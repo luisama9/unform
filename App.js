@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {SafeAreaView, StyleSheet, Button, TextInput} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {useAsyncStorage} from '@react-native-community/async-storage';
@@ -28,28 +28,37 @@ const App = () => {
     defaultValues,
   });
   const {getItem, setItem, removeItem} = useAsyncStorage('users');
+  const item = useRef(null);
   const [users, setUsers] = useState([]);
-  const [updated, setUpdated] = useState(false);
   const values = watch(); // triggers re-render
 
-  console.log('USER', users);
+  console.log('RENDER');
 
   const loadStorage = useCallback(async () => {
-    const item = JSON.parse(await getItem());
-    (await item) !== null && setUsers(item);
-  }, [getItem]);
+    try {
+      const preloadedValue = JSON.parse(await getItem());
+      item.current = preloadedValue !== null ? preloadedValue : [];
 
-  const onSubmit = async ({email, password}) => {
-    await setItem(JSON.stringify([...users, {email, password}]));
+      if (JSON.stringify(users) !== JSON.stringify(item.current)) {
+        return item.current !== null ? setUsers(item.current) : setUsers([]);
+      }
+    } catch (error) {}
+  }, [getItem, users]);
 
-    reset(defaultValues);
-    setUpdated(!updated);
-  };
+  const onSubmit = useCallback(
+    async ({email, password}) => {
+      await setItem(JSON.stringify([...users, {email, password}]));
+
+      reset(defaultValues);
+      loadStorage();
+    },
+    [loadStorage, reset, setItem, users],
+  );
 
   const handleReset = async () => {
     try {
       await removeItem();
-      setUpdated(!updated);
+      loadStorage();
     } catch (error) {}
   };
 
@@ -60,8 +69,7 @@ const App = () => {
 
   useEffect(() => {
     loadStorage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updated]);
+  }, [loadStorage]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,4 +90,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default React.memo(App);
