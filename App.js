@@ -1,7 +1,11 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {SafeAreaView, StyleSheet, Button, TextInput} from 'react-native';
+
 import {useForm} from 'react-hook-form';
 import {useAsyncStorage} from '@react-native-community/async-storage';
+
+import {useDispatch} from './store';
+
 import List from './list';
 
 const styles = StyleSheet.create({
@@ -28,7 +32,6 @@ const App = () => {
     defaultValues,
   });
   const {getItem, setItem, removeItem} = useAsyncStorage('users');
-  const item = useRef(null);
   const [users, setUsers] = useState([]);
   const values = watch(); // triggers re-render
 
@@ -36,11 +39,14 @@ const App = () => {
 
   const loadStorage = useCallback(async () => {
     try {
-      const preloadedValue = JSON.parse(await getItem());
-      item.current = preloadedValue !== null ? preloadedValue : [];
+      let preloadedValue = JSON.parse(await getItem());
 
-      if (JSON.stringify(users) !== JSON.stringify(item.current)) {
-        return item.current !== null ? setUsers(item.current) : setUsers([]);
+      if (preloadedValue === null) {
+        preloadedValue = [];
+      }
+
+      if (JSON.stringify(users) !== JSON.stringify(preloadedValue)) {
+        return setUsers(preloadedValue);
       }
     } catch (error) {}
   }, [getItem, users]);
