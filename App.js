@@ -20,7 +20,7 @@ const App = () => {
   const {getItem} = useAsyncStorage('users');
   const [users, setUsers] = useState([]);
 
-  console.log('RENDER');
+  // console.log('RENDER');
 
   const loadStorage = useCallback(async () => {
     try {
