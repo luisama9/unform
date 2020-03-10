@@ -3361,9 +3361,9 @@ inquirer@^3.0.6:
     through "^2.3.6"
 
 inquirer@^7.0.0:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.0.6.tgz#ee4ff0ea7ecda5324656fe665878790f66df7d0c"
-  integrity sha512-7SVO4h+QIdMq6XcqIqrNte3gS5MzCCKZdsq9DO4PJziBFNYzP3PGFbDjgadDb//MCahzgjCxvQ/O2wa7kx9o4w==
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.1.0.tgz#1298a01859883e17c7264b82870ae1034f92dd29"
+  integrity sha512-5fJMWEmikSYu0nv/flMc475MhGbB7TSPd/2IpFV4I4rMklboCH2rQjYY5kKiYGHqUF9gvaambupcJFFG9dvReg==
   dependencies:
     ansi-escapes "^4.2.1"
     chalk "^3.0.0"
@@ -7107,9 +7107,9 @@ ws@^3.3.1:
     ultron "~1.1.0"
 
 ws@^7.0.0:
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.2.tgz#36df62f68f0d1a6ec66d3f880a02476f3a81f24f"
-  integrity sha512-2qj/tYkDPDSVf7JiHanwEBwkhxi7DchFewIsSnR33MQtG3O/BPAJjqs4g6XEuayuRqIExSQMHZlmyDLbuSrXYw==
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.3.tgz#a5411e1fb04d5ed0efee76d26d5c46d830c39b46"
+  integrity sha512-HTDl9G9hbkNDk98naoR/cHDws7+EyYMOdL1BmjsZXRUjf7d+MficC4B7HLUPlSiho0vg+CWKrGIt/VJBd1xunQ==
 
 xcode@^2.0.0:
   version "2.1.0"

@@ -29,18 +29,17 @@ export default function FormContainer({loadStorage, users, setUsers}) {
   const {register, handleSubmit, setValue, reset, watch} = useForm({
     defaultValues,
   });
-  const {setItem, removeItem} = useAsyncStorage('users');
+  const {removeItem} = useAsyncStorage('users');
   const dispatch = useDispatch();
   const values = watch(); // triggers re-render
 
   const onSubmit = useCallback(
     async ({email, password}) => {
-      await setItem(JSON.stringify([...users, {email, password}]));
       dispatch({type: 'ADD_USER', email, password});
       reset(defaultValues);
       loadStorage();
     },
-    [dispatch, loadStorage, reset, setItem, users],
+    [dispatch, loadStorage, reset],
   );
 
   const handleReset = async () => {

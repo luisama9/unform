@@ -1,24 +1,30 @@
-import {useReducer} from 'react';
+import {useReducer, useEffect} from 'react';
 import {createContainer} from 'react-tracked';
 
-// used only when localStorage is empty
-const initialState = {
-  users: [{email: 'teste', password: '123'}],
-};
+import {useAsyncStorage} from '@react-native-community/async-storage';
+
+const STORAGE_KEY = 'users';
+let initialState = [{email: 'teste', password: '123'}];
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'ADD_USER':
-      return {
-        users: [
-          ...state.users,
-          {email: action.email, password: action.password},
-        ],
-      };
+      return [...state, {email: action.email, password: action.password}];
   }
 };
 
-const useStore = () => useReducer(reducer, initialState);
+const useStore = () => {
+  const {setItem, getItem} = useAsyncStorage(STORAGE_KEY);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    (async () => {
+      await setItem(JSON.stringify(state));
+    })();
+  }, [getItem, setItem, state]);
+
+  return [state, dispatch];
+};
 
 export const {
   Provider,
