@@ -1,7 +1,17 @@
-import React from 'react';
-import {StyleSheet, TextInput, Button} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {StyleSheet, Button, TextInput} from 'react-native';
+
+import {useForm} from 'react-hook-form';
+import {useAsyncStorage} from '@react-native-community/async-storage';
+
+import {useDispatch} from './store';
 
 const styles = StyleSheet.create({
+  container: {
+    margin: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   input: {
     width: '100%',
     padding: 15,
@@ -10,30 +20,59 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function FormContainer({
-  emailRef,
-  email,
-  setEmail,
-  password,
-  setPassword,
-  handleReset,
-  handleSubmit,
-}) {
+const defaultValues = {
+  email: '',
+  password: '',
+};
+
+export default function FormContainer({loadStorage, users, setUsers}) {
+  const {register, handleSubmit, setValue, reset, watch} = useForm({
+    defaultValues,
+  });
+  const {setItem, removeItem} = useAsyncStorage('users');
+  const dispatch = useDispatch();
+  const values = watch(); // triggers re-render
+
+  const onSubmit = useCallback(
+    async ({email, password}) => {
+      await setItem(JSON.stringify([...users, {email, password}]));
+      dispatch({type: 'ADD_USER', email, password});
+      reset(defaultValues);
+      loadStorage();
+    },
+    [dispatch, loadStorage, reset, setItem, users],
+  );
+
+  const handleReset = async () => {
+    try {
+      await removeItem();
+      loadStorage();
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    register({name: 'email'});
+    register({name: 'password'});
+  }, [register]);
+
+  useEffect(() => {
+    loadStorage();
+  }, [loadStorage]);
+
   return (
     <>
       <Button title="Resetar" onPress={handleReset} />
       <TextInput
-        ref={emailRef}
+        value={values.email}
         style={styles.input}
-        value={email}
-        onChangeText={text => setEmail(text)}
+        onChangeText={text => setValue('email', text)}
       />
       <TextInput
+        value={values.password}
         style={styles.input}
-        value={password}
-        onChangeText={text => setPassword(text)}
+        onChangeText={text => setValue('password', text)}
       />
-      <Button title="Enviar" onPress={handleSubmit} />
+      <Button title="Enviar" onPress={handleSubmit(onSubmit)} />
     </>
   );
 }
