@@ -25,7 +25,7 @@ const defaultValues = {
   password: '',
 };
 
-export default function FormContainer({loadStorage, users, setUsers}) {
+export default function FormContainer({loadStorage}) {
   const {register, handleSubmit, setValue, reset, watch} = useForm({
     defaultValues,
   });

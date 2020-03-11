@@ -13,24 +13,22 @@ const reducer = (state, action) => {
   }
 };
 
-const useInit = a => {
+const useInit = () => {
   const {getItem} = useAsyncStorage(STORAGE_KEY);
   let preloadedState;
 
   try {
-    preloadedState = JSON.parse(getItem().then(value => console.log(value)));
-    return preloadedState;
+    preloadedState = JSON.parse(getItem().then(v => console.log(v)));
   } catch (error) {}
 
-  console.log('INIT', a);
+  console.log('INIT', preloadedState);
 
   return preloadedState || initialState;
 };
 
 const useStore = () => {
   const {setItem} = useAsyncStorage(STORAGE_KEY);
-  const [a, setA] = useState('bilu');
-  const [state, dispatch] = useReducer(reducer, [a, setA], useInit);
+  const [state, dispatch] = useReducer(reducer, 'aaa', useInit);
 
   useEffect(() => {
     (async () => {

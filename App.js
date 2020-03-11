@@ -43,12 +43,8 @@ const App = () => {
   return (
     <Provider>
       <SafeAreaView style={styles.container}>
-        <FormContainer
-          users={users}
-          setUsers={setUsers}
-          loadStorage={loadStorage}
-        />
-        <List users={users} />
+        <FormContainer loadStorage={loadStorage} />
+        <List />
       </SafeAreaView>
     </Provider>
   );

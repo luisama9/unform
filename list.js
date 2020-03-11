@@ -1,20 +1,15 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Text, View} from 'react-native';
 import {useTrackedState} from './store';
 
-function List({users}) {
-  const state = useTrackedState();
+function List() {
+  const users = useTrackedState();
+  console.log('STATE', users);
 
-  useEffect(() => {
-    (async () => {
-      console.log('STATE', await state);
-    })();
-  });
-  // console.log(users);
   return (
     <View>
       <Text>Listagem</Text>
-      {/* {users && users.map(user => <Text key={user.email}>{user.email}</Text>)} */}
+      {users && users.map(user => <Text key={user.email}>{user.email}</Text>)}
     </View>
   );
 }
